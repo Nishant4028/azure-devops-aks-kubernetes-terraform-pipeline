@@ -45,6 +45,7 @@ stages:
               backendAzureRmStorageAccountName: 'nishant1231'
               backendAzureRmContainerName: 'tfstatefiles'
               backendAzureRmKey: 'aks-base.tfstate'
+              commandOptions: '-reconfigure'
           - task: TerraformTaskV4@4
             displayName: Terraform Validate
             inputs:
@@ -81,6 +82,7 @@ stages:
                   backendAzureRmStorageAccountName: 'nishant1231'
                   backendAzureRmContainerName: 'tfstatefiles'
                   backendAzureRmKey: 'aks-$(DEV_ENVIRONMENT).tfstate'
+                  commandOptions: '-reconfigure'
               
               - task: TerraformTaskV4@4
                 displayName: Terraform Plan
