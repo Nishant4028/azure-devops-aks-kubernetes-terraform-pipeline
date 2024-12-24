@@ -7,13 +7,28 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: NishantAgent
+  demands:
+  - agent.name -equals myagent1
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+  - stage: TerraformValidate
+    jobs:
+      - job: TerraformValidateJob
+        continueOnError: false
+        steps:
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Artifacts
+            inputs:
+              targetPath: '$(System.DefaultWorkingDirectory)/terraform-manifests'
+              artifact: 'terraform-manifests-out'
+              publishLocation: 'pipeline'
+          - task: TerraformInstaller@1
+            displayName: Terraform install
+            inputs:
+              terraformVersion: 'latest'
+          
+          
+          
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+
