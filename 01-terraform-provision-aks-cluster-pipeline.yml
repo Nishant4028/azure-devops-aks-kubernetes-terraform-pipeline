@@ -4,14 +4,14 @@ trigger:
 pool:
   name: NishantAgent
   demands:
-  - agent.name -equals myagent
+  - agent.name -equals myagent1
 
+          
 variables:
 - name: DEV_ENVIRONMENT
   value: dev
 - name: QA_ENVIRONMENT
   value: qa
-
 stages:
   - stage: TerraformValidate
     jobs:
@@ -48,7 +48,7 @@ stages:
               provider: 'azurerm'
               command: 'validate'
               workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-
+          
   - stage: DeployAKSClusters
     jobs:
       - deployment: DeployDevAKSCluster
@@ -56,7 +56,7 @@ stages:
         pool:
           name: NishantAgent
           demands:
-          - agent.name -equals myagent
+          - agent.name -equals myagent1
         environment: $(DEV_ENVIRONMENT)
         strategy:
          runOnce:
@@ -97,12 +97,14 @@ stages:
                   commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
                   environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
 
+
+
       - deployment: DeployQAAKSCluster
         displayName: DeployQAAKSCluster
         pool:
           name: NishantAgent
           demands:
-          - agent.name -equals myagent
+          - agent.name -equals myagent1
         environment: $(QA_ENVIRONMENT)
         strategy:
          runOnce:
