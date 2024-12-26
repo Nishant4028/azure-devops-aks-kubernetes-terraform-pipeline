@@ -1,8 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
 
@@ -11,12 +6,12 @@ pool:
   demands:
   - agent.name -equals myagent
 
-          
 variables:
 - name: DEV_ENVIRONMENT
   value: dev
 - name: QA_ENVIRONMENT
   value: qa
+
 stages:
   - stage: TerraformValidate
     jobs:
@@ -53,7 +48,7 @@ stages:
               provider: 'azurerm'
               command: 'validate'
               workingDirectory: '$(System.DefaultWorkingDirectory)/terraform-manifests'
-          
+
   - stage: DeployAKSClusters
     jobs:
       - deployment: DeployDevAKSCluster
@@ -101,8 +96,6 @@ stages:
                   workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
                   commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
                   environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
-
-
 
       - deployment: DeployQAAKSCluster
         displayName: DeployQAAKSCluster
