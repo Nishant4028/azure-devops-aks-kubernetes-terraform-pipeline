@@ -100,6 +100,7 @@ stages:
 
 
       - deployment: DeployQAAKSCluster
+        dependsOn: DeployDevAKSCluster
         displayName: DeployQAAKSCluster
         pool:
           name: NishantAgent
