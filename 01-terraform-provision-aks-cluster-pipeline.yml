@@ -100,6 +100,13 @@ stages:
                 inputs:
                   kubectlVersion: 'latest'
               
+              - task: AzureCLI@2
+                inputs:
+                  azureSubscription: 'terraform-aks-azurerm-svc-con'
+                  scriptType: 'bash'
+                  scriptLocation: 'inlineScript'
+                  inlineScript: 'az aks get-credentials --resource-group terraform-aks-dev --name terraform-aks-dev-cluster' 
+                
               - script: |
                   kubectl create namespace argocd
                   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
