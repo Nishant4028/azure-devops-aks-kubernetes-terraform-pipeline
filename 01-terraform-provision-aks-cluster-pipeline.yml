@@ -97,51 +97,9 @@ stages:
                   commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(DEV_ENVIRONMENT)-$(Build.BuildId).out'
                   environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
 
+              - script: |
+                  kubectl create namespace argocd
+                  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+                displayName: 'Install Argo CD'
 
-
-      - deployment: DeployQAAKSCluster
-        dependsOn: DeployDevAKSCluster
-        displayName: DeployQAAKSCluster
-        pool:
-          name: NishantAgent
-          demands:
-          - agent.name -equals myagent1
-        environment: $(QA_ENVIRONMENT)
-        strategy:
-         runOnce:
-           deploy:
-             steps:
-              - task: DownloadSecureFile@1
-                displayName: Download SSH key
-                name: sshkey
-                inputs:
-                  secureFile: 'aks-terraform-devops-ssh-key-ububtu.pub'
-              - task: TerraformTaskV4@4
-                displayName: Terraform Init
-                inputs:
-                  provider: 'azurerm'
-                  command: 'init'
-                  workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                  commandOptions: '-reconfigure'
-                  backendServiceArm: 'terraform-aks-azurerm-svc-con'
-                  backendAzureRmResourceGroupName: 'az-devops-agent'
-                  backendAzureRmStorageAccountName: 'nishant1231'
-                  backendAzureRmContainerName: 'tfstatefiles'
-                  backendAzureRmKey: 'aks-$(QA_ENVIRONMENT).tfstate'
-              
-              - task: TerraformTaskV4@4
-                displayName: Terraform Plan
-                inputs:
-                  provider: 'azurerm'
-                  command: 'plan'
-                  workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                  commandOptions: '-var ssh_public_key=$(sshkey.secureFilePath) -var environment=$(QA_ENVIRONMENT) -out $(Pipeline.Workspace)/terraform-manifests-out/$(QA_ENVIRONMENT)-$(Build.BuildId).out'
-                  environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
-                
-              - task: TerraformTaskV4@4
-                inputs:
-                  provider: 'azurerm'
-                  command: 'apply'
-                  workingDirectory: '$(Pipeline.Workspace)/terraform-manifests-out'
-                  commandOptions: '$(Pipeline.Workspace)/terraform-manifests-out/$(QA_ENVIRONMENT)-$(Build.BuildId).out'
-                  environmentServiceNameAzureRM: 'terraform-aks-azurerm-svc-con'
+   
