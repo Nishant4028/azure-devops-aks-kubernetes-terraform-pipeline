@@ -35,7 +35,7 @@ terraform {
 
 # 2. Terraform Provider Block for AzureRM
 provider "azurerm" {
-  subscription_id = "9c4bd9c8-184a-4fc0-8933-f816a5bbb587"
+  subscription_id = "ab86ad4a-83cb-4d45-ba64-21eb6e8b12ea"
   features {
     resource_group {
       prevent_deletion_if_contains_resources = false
